@@ -69,34 +69,30 @@ func (u *WarehouseUsecaseImpl) SwitchWarehouse(ctx context.Context, payload *dom
 
 func (u *WarehouseUsecaseImpl) TransferStockWarehouse(ctx context.Context, payload *domain.StockTransferRequest) (response domain.StockTransferResponse, err error) {
 	productIDs := []string{}
+	deductStock := []domain.WarehouseStock{}
+	addedStock := []domain.WarehouseStock{}
 	for _, row := range payload.Products {
 		productIDs = append(productIDs, row.ProductID)
+		deductStock = append(deductStock, domain.WarehouseStock{
+			WarehouseId: payload.SourceWarehouseID,
+			ProductId:   row.ProductID,
+			Quantity:    row.Quantity,
+		})
+		addedStock = append(addedStock, domain.WarehouseStock{
+			WarehouseId: payload.DestinationWarehouseID,
+			ProductId:   row.ProductID,
+			Quantity:    row.Quantity,
+		})
 	}
 
-	warehouseStocks, err := u.WarehouseStockRepo.GetByWarehouseIAndProductIds(ctx, payload.SourceWarehouseID, productIDs)
-	if err != nil {
-		log.Default().Printf("error occurred during get warehouse stock with warehouse_id '%v' & product_ids '%v': %v",
-			payload.SourceWarehouseID, strings.Join(productIDs, ", "), err)
-		return response, err
-	}
-
-	err = u.WarehouseStockRepo.TransferStock(ctx, domain.SOURCE, warehouseStocks)
+	err = u.WarehouseStockRepo.TransferStock(ctx, domain.SOURCE, deductStock)
 	if err != nil {
 		log.Default().Printf("error occurred during update source warehouse while transfer stock with warehouse_id '%v' & product_ids '%v': %v",
 			payload.SourceWarehouseID, strings.Join(productIDs, ", "), err)
 		return response, err
 	}
 
-	transferStock := []domain.WarehouseStock{}
-	for _, row := range warehouseStocks {
-		transferStock = append(transferStock, domain.WarehouseStock{
-			WarehouseId: row.WarehouseId,
-			ProductId:   row.ProductId,
-			Quantity:    row.Quantity,
-		})
-	}
-
-	err = u.WarehouseStockRepo.TransferStock(ctx, domain.DESTINATION, transferStock)
+	err = u.WarehouseStockRepo.TransferStock(ctx, domain.DESTINATION, addedStock)
 	if err != nil {
 		log.Default().Printf("error occurred during update destination warehouse while transfer stock with warehouse_id '%v' & product_ids '%v': %v",
 			payload.SourceWarehouseID, strings.Join(productIDs, ", "), err)

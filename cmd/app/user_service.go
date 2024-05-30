@@ -40,9 +40,5 @@ func RunUserServer(cmd *cobra.Command, args []string) {
 	v1.Use(customMiddleware.AuthMiddleware(jwtConfig))
 	httpHandler.InitUserHandler(v1, v1NoAuth, UserUsecase)
 
-	httpHandler.InitProductHandler(v1, ProductUsecase)
-	httpHandler.InitOrderHandler(v1, OrderUsecase)
-	httpHandler.InitWarehouseHandler(v1, WarehouseUsecase)
-
 	e.Logger.Fatal(e.Start(":8080"))
 }

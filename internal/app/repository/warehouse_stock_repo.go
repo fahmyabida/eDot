@@ -23,56 +23,38 @@ func NewWarehouseStockRepository(db *gorm.DB) domain.IWarehouseStockRepo {
 }
 
 func (r WarehouseStockRepository) TransferStock(ctx context.Context, transferMode domain.TransferStockMode, payloads []domain.WarehouseStock) (err error) {
-	tx := r.DB.Begin()
-	if tx.Error != nil {
-		panic(tx.Error)
-	}
-	defer func() {
-		if err != nil {
-			tx.Rollback()
-		}
-	}()
-
 	switch transferMode {
 	case domain.SOURCE:
-
-		mapPayload := map[string]domain.WarehouseStock{}
-		warehouseStockIDs := []string{}
 		for _, rowPayload := range payloads {
-			mapPayload[rowPayload.ID] = rowPayload
-			warehouseStockIDs = append(warehouseStockIDs, rowPayload.ID)
-		}
-
-		var warehouseStocks = []domain.WarehouseStock{}
-		if err = tx.Set("gorm:query_option", "FOR UPDATE").Where("id IN (?)", warehouseStockIDs).Find(&warehouseStocks).Error; err != nil {
-			return err
-		}
-		for _, warehouseStock := range warehouseStocks {
-			warehouseStock.Quantity -= mapPayload[warehouseStock.ID].Quantity
-			if warehouseStock.Quantity < 0 {
-				return pkgErrors.InvalidAmountError(fmt.Sprintf(pkgErrors.ErrInvalidQuantityWithID, warehouseStock.ID))
+			var warehouseStock = domain.WarehouseStock{}
+			dbResult := r.DB.Model(&warehouseStock).Where("product_id = ? AND warehouse_id = ?", rowPayload.ProductId, rowPayload.WarehouseId).Find(&warehouseStock)
+			if err = dbResult.Error; err != nil {
+				return err
 			}
-			if err := tx.Save(&warehouseStock).Error; err != nil {
-				return pkgErrors.WarehouseStockUpdateFailedError(fmt.Sprintf(pkgErrors.ErrWarehouseStockUpdateFailed, warehouseStock.ID, err))
+			warehouseStock.Quantity -= rowPayload.Quantity
+			dbResult = r.DB.Model(&warehouseStock).Where("product_id = ? AND warehouse_id = ?", rowPayload.ProductId, rowPayload.WarehouseId).Updates(&warehouseStock)
+			if err = dbResult.Error; err != nil {
+				return err
 			}
 		}
-		return tx.Commit().Error
+		return nil
 	case domain.DESTINATION:
 		for _, rowPayload := range payloads {
 			var warehouseStock = domain.WarehouseStock{}
-			r.DB.Model(&warehouseStock).Where("product_id = ? AND warehouse_id = ?", rowPayload.ProductId, rowPayload.WarehouseId).Find(warehouseStock)
+			r.DB.Model(&warehouseStock).Where("product_id = ? AND warehouse_id = ?", rowPayload.ProductId, rowPayload.WarehouseId).Find(&warehouseStock)
 			if warehouseStock.ID == "" {
 				r.DB.Create(&rowPayload)
-			} else {
-				warehouseStock.Quantity += rowPayload.Quantity
-				r.DB.Model(&warehouseStock).Where("product_id = ? AND warehouse_id = ?", rowPayload.ProductId).Updates(&warehouseStock)
+				continue
+			}
+			warehouseStock.Quantity += rowPayload.Quantity
+			dbResult := r.DB.Model(&warehouseStock).Where("product_id = ? AND warehouse_id = ?", rowPayload.ProductId, rowPayload.WarehouseId).Updates(&warehouseStock)
+			if err = dbResult.Error; err != nil {
+				return err
 			}
 		}
 
 	}
-
 	return nil
-
 }
 
 func (r WarehouseStockRepository) GetByWarehouseIAndProductIds(ctx context.Context, warehouseID string, productIDs []string) (datas []domain.WarehouseStock, err error) {

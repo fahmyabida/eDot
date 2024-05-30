@@ -1,0 +1,12 @@
+@startuml
+queue       "SQS Queue\nqueue:reversal balance" as SQS
+participant "Transfer User Svc" as svc
+database    Postgres    as pg
+
+SQS -> svc: message received
+
+svc -> pg: update user balance
+
+svc -> SQS: acknowledge message
+
+@enduml

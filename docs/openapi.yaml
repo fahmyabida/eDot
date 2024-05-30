@@ -1,0 +1,186 @@
+# openapi.yaml
+openapi: 3.0.4
+info:
+  version: 1.0.0
+  title: Test API
+  description: A test API
+paths:
+  /healthcheck/readiness:
+    get:
+      tags:
+        - healthcheck
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Healthcheck'
+        '503':
+          description: 'Service Unavailable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Healthcheck'
+  /healthcheck/liveness:
+    get:
+      tags:
+        - healthcheck
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Healthcheck'
+  /api/v1/transfers:
+    post:
+      summary: Create a transfer
+      tags:
+        - transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Transfer'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+  /api/v1/bank-account/validate:
+    post:
+      summary: Validate bank account
+      tags:
+        - bank-account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/BankAccount'
+      responses:
+        '200':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+  /api/v1/callbacks/transfer:
+    post:
+      summary: Callback transfer from bank
+      tags:
+        - callback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/CallbackTransfer'
+      responses:
+        '200':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallbackTransfer'
+
+components:
+  schemas:
+    Healthcheck:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'OK'
+        dependencies:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: 'postgresql'
+              status:
+                type: string
+                example: 'OK'
+    Transfer:
+      type: object
+      properties:
+        user_id:
+          type: string
+          example: 'u-515ffa15-43af-4773-b0d5-e80a53613a4b'
+        destination_account:
+          type: string
+          example: '123ik425124'
+        bank_code:
+          type: string
+          example: 'US12412'
+        currency: 
+          type: string
+          example: 'IDR'
+        amount: 
+          type: number
+          format: double
+          example: 1000
+        notes: 
+          type: string
+          example: 'Payment for goods purchased'
+        reference_id: 
+          type: string
+          example: 'ORD123456789'
+        status: 
+          type: string
+          example: 'ACCEPTED'
+        metadata: 
+          type: object
+          properties: 
+            recipient: 
+              type: object
+              properties: 
+                name: 
+                  type: string
+                  example: 'Jane Smith'
+                email: 
+                  type: string
+                  example: 'jane.smith@example.com'
+    BankAccount:
+      type: object
+      properties:
+        account_number:
+          type: string
+          example: '124215'
+        bank_name:
+          type: string
+          example: 'Mandiri Bank'
+        bank_code:
+          type: string
+          example: '123456789'
+        valid: 
+          type: boolean
+          example: true
+    CallbackTransfer:
+      type: object
+      properties:
+        transfer_id:
+          type: string
+          example: '9ae3794f-7675-4ce0-a04e-24668959719e'
+        status:
+          type: string
+          example: 'SUCCESS'
+        message:
+          type: string
+          example: 'Transaction success'
+        amount: 
+          type: number
+          format: double
+          example: 1000
+        account_number:
+          type: string
+          example: '124215'
+        recipient_name:
+          type: string
+          example: 'Jane Smith'

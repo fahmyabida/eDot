@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "943b6142-1ee2-4491-ae8c-2961cd92a3ab",
+		"name": "Brick-Transfer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3674328",
+		"_collection_link": "https://warped-resonance-908564.postman.co/workspace/Brick~8ce0d0b3-cf8b-450a-ae0c-51244cfb3f35/collection/3674328-943b6142-1ee2-4491-ae8c-2961cd92a3ab?action=share&source=collection_link&creator=3674328"
+	},
+	"item": [
+		{
+			"name": "bank-client",
+			"item": [
+				{
+					"name": "bank account validate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account_number\": \"qwqe213\",\n    \"bank_code\": \"11-132-11\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fahmy-bank.free.beeceptor.com/api/v1/bank-account-validate",
+							"protocol": "https",
+							"host": [
+								"fahmy-bank",
+								"free",
+								"beeceptor",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank-account-validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transfer to the bank",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 100.00,\n    \"account_number\": \"1234567890\",\n    \"recipient_name\": \"John Doe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fahmy-bank.free.beeceptor.com/api/v1/transfer",
+							"protocol": "https",
+							"host": [
+								"fahmy-bank",
+								"free",
+								"beeceptor",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "transfer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"u-515ffa15-43af-4773-b0d5-e80a53613a4b\",\n    \"destination_account\": \"124215\",\n    \"bank_code\": \"123456789\",\n    \"amount\": 1000,\n    \"currency\": \"IDR\",\n    \"notes\": \"Move fund\",\n    \"reference_id\": \"ORD123456789-ok2\",\n    \"metadata\": {\n        \"recipient\": {\n            \"name\": \"Jane Smith\",\n            \"email\": \"jane.smith@example.com\"\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/api/v1/transfer",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validate bank account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account_number\": \"124215\",\n    \"bank_code\": \"123456789\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/api/v1/bank-account/validate",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bank-account",
+						"validate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "callback",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transfer_id\": \"9ae3794f-7675-4ce0-a04e-24668959719e\",\n  \"status\": \"FAILED\",\n  \"message\": \"-\",\n  \"amount\": 1000,\n  \"account_number\": \"124215\",\n  \"recipient_name\": \"Jane Smith\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/api/v1/callbacks/transfer",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"callbacks",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseURL",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}

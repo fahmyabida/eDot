@@ -1,0 +1,149 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: eDot
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks: [ "eDot" ]
+
+  user-svc:
+    container_name: user-svc
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: [ 8080:8080 ]
+    volumes:
+      - ./docs:/root/docs
+    environment:
+      APP_ENV: production
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: eDot
+      PG_RO_HOST: postgres
+      PG_RO_PORT: 5432
+      PG_RO_USER: postgres
+      PG_RO_PASSWORD: postgres
+      PG_RO_DATABASE: eDot
+    depends_on:
+      - postgres
+    networks: [ "eDot" ]
+    command: [ "./eDot", "user" ]
+  
+  order-svc:
+    container_name: order-svc
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: [ 8080:8080 ]
+    volumes:
+      - ./docs:/root/docs
+    environment:
+      APP_ENV: production
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: eDot
+      PG_RO_HOST: postgres
+      PG_RO_PORT: 5432
+      PG_RO_USER: postgres
+      PG_RO_PASSWORD: postgres
+      PG_RO_DATABASE: eDot
+    depends_on:
+      - postgres
+    networks: [ "eDot" ]
+    command: [ "./eDot", "order" ]
+  
+  product-svc:
+    container_name: product-svc
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: [ 8080:8080 ]
+    volumes:
+      - ./docs:/root/docs
+    environment:
+      APP_ENV: production
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: eDot
+      PG_RO_HOST: postgres
+      PG_RO_PORT: 5432
+      PG_RO_USER: postgres
+      PG_RO_PASSWORD: postgres
+      PG_RO_DATABASE: eDot
+    depends_on:
+      - postgres
+    networks: [ "eDot" ]
+    command: [ "./eDot", "product" ]
+  
+  warehouse-svc:
+    container_name: warehouse-svc
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: [ 8080:8080 ]
+    volumes:
+      - ./docs:/root/docs
+    environment:
+      APP_ENV: production
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: eDot
+      PG_RO_HOST: postgres
+      PG_RO_PORT: 5432
+      PG_RO_USER: postgres
+      PG_RO_PASSWORD: postgres
+      PG_RO_DATABASE: eDot
+    depends_on:
+      - postgres
+    networks: [ "eDot" ]
+    command: [ "./eDot", "warehouse" ]
+
+  cancel-order-worker:
+    container_name: cancel-order-worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: [ 8080:8080 ]
+    volumes:
+      - ./docs:/root/docs
+    environment:
+      APP_ENV: production
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: eDot
+      PG_RO_HOST: postgres
+      PG_RO_PORT: 5432
+      PG_RO_USER: postgres
+      PG_RO_PASSWORD: postgres
+      PG_RO_DATABASE: eDot
+    depends_on:
+      - postgres
+    networks: [ "eDot" ]
+    command: [ "./eDot", "cancel-order-worker" ]
+
+volumes:
+  postgres_data:
+  redis-data:
+
+networks:
+  eDot:
+    driver: bridge

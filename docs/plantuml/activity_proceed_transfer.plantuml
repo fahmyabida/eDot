@@ -1,0 +1,25 @@
+@startuml
+queue       "SQS Queue\nqueue:proceed transfer" as SQS
+participant "Proceed Transfer Worker" as svc
+database    Postgres    as pg
+participant Bank as bank
+
+SQS -> svc: message received
+
+svc <-> pg: get transfer data
+
+svc -> svc: check transfer status
+
+alt status "DEDUCTED" then proceed the transfer
+  
+  svc -> bank: request transfer
+
+  bank -> svc: response of transfer
+
+  svc -> pg: update transfer status
+
+end
+
+svc -> SQS: acknowledge message
+
+@enduml

@@ -1,0 +1,435 @@
+{
+	"info": {
+		"_postman_id": "06f1abe0-2225-4163-b58a-9814bb826237",
+		"name": "eDot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3674328"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerResponse = pm.response.headers;",
+									"",
+									"var newToken = headerResponse.get('token');",
+									"var userId = headerResponse.get('user_id')",
+									"",
+									"",
+									"console.log(\"oldToken\",pm.variables.get(\"token\"));",
+									"console.log(\"newToken\", newToken)",
+									"",
+									"pm.collectionVariables.set(\"token\", newToken);",
+									"pm.collectionVariables.set(\"user_id\", userId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"fahmyabida2@gmail.com\",\n    \"password\": \"abcdef\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/api/v1/user",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.collectionVariables.set(\"token\", response.token);",
+									"pm.collectionVariables.set(\"user_id\", response.user_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"fahmyabida@gmail.com\",\n    \"password\": \"abcdef\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/api/v1/user/login",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "warehouse",
+			"item": [
+				{
+					"name": "activation warehouse",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerResponse = pm.response.headers;",
+									"",
+									"var newToken = headerResponse.get('token');",
+									"var userId = headerResponse.get('user_id')",
+									"",
+									"",
+									"console.log(\"oldToken\",pm.variables.get(\"token\"));",
+									"console.log(\"newToken\", newToken)",
+									"",
+									"pm.collectionVariables.set(\"token\", newToken);",
+									"pm.collectionVariables.set(\"user_id\", userId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"warehouse_id\": \"warehouse-8ca7d239-c7f5-4e78-ab3e-c4140bb7b452\",\n    \"mode\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/api/v1/warehouses/activation",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"warehouses",
+								"activation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transfer stock",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerResponse = pm.response.headers;",
+									"",
+									"var newToken = headerResponse.get('token');",
+									"var userId = headerResponse.get('user_id')",
+									"",
+									"",
+									"console.log(\"oldToken\",pm.variables.get(\"token\"));",
+									"console.log(\"newToken\", newToken)",
+									"",
+									"pm.collectionVariables.set(\"token\", newToken);",
+									"pm.collectionVariables.set(\"user_id\", userId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source_warehouse_id\": \"warehouse-8ca7d239-c7f5-4e78-ab3e-c4140bb7b452\",\n    \"destination_warehouse_id\": \"warehouse-6653881c-e000-4757-9bb4-3142c5abe21f\",\n    \"products\": [\n        {\n            \"product_id\": \"{{product_id_1}}\",\n            \"quantity\": 10\n        },\n        {\n            \"product_id\": \"{{product_id_2}}\",\n            \"quantity\": 10\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/api/v1/warehouses/stocks/transfer",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"warehouses",
+								"stocks",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerResponse = pm.response.headers;",
+									"",
+									"var newToken = headerResponse.get('token');",
+									"var userId = headerResponse.get('user_id')",
+									"",
+									"",
+									"console.log(\"oldToken\",pm.variables.get(\"token\"));",
+									"console.log(\"newToken\", newToken)",
+									"",
+									"pm.collectionVariables.set(\"token\", newToken);",
+									"pm.collectionVariables.set(\"user_id\", userId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"products\": [\n        {\n            \"product_id\": \"{{product_id_1}}\",\n            \"quantity\": 2\n        },\n        {\n            \"product_id\": \"{{product_id_2}}\",\n            \"quantity\": 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/api/v1/orders",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerResponse = pm.response.headers;",
+									"",
+									"var newToken = headerResponse.get('token');",
+									"var userId = headerResponse.get('user_id')",
+									"",
+									"",
+									"console.log(\"oldToken\",pm.variables.get(\"token\"));",
+									"console.log(\"newToken\", newToken)",
+									"",
+									"pm.collectionVariables.set(\"token\", newToken);",
+									"pm.collectionVariables.set(\"user_id\", userId);",
+									"",
+									"// -----------------",
+									"var responseBody = pm.response.json();",
+									"pm.collectionVariables.set(\"product_id_1\", responseBody.data[0].id);",
+									"pm.collectionVariables.set(\"product_id_2\", responseBody.data[1].id);",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/api/v1/products?sort_by=created_at",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "sort_by",
+									"value": "created_at"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseURL",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "product_id_1",
+			"value": ""
+		},
+		{
+			"key": "product_id_2",
+			"value": ""
+		}
+	]
+}
